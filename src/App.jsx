@@ -73,11 +73,7 @@ const HOURS = Array.from(
 const PIE_COLORS = [EMERALD, AMBER];
 
 const DEALERS = [
-  "VW Cordoba",
   "VW Orizaba",
-  "VW Poza Rica",
-  "VW Tuxtepec",
-  "VW Tuxpan",
 ];
 
 const MODELOS = [
