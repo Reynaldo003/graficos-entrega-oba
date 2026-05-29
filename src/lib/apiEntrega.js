@@ -1,4 +1,4 @@
-// src/pages/Entregas/lib/apiEntregas.js
+// src/lib/apiEntrega.js
 const API =
   import.meta.env.VITE_API_URL || "https://crm.grupoautomotrizryr.com";
 // import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
@@ -40,7 +40,7 @@ async function leerError(res) {
 
 async function http(
   path,
-  { method = "GET", body, headers, auth = false } = {},
+  { method = "GET", body, headers, responseType, auth = false } = {},
 ) {
   const finalHeaders = {
     ...(auth ? getAuthHeader() : {}),
@@ -60,6 +60,10 @@ async function http(
 
   if (res.status === 204) return null;
 
+  if (responseType === "blob") {
+    return await res.blob();
+  }
+
   const contentType = res.headers.get("content-type") || "";
 
   if (contentType.includes("application/json")) {
@@ -69,43 +73,54 @@ async function http(
   return await res.text();
 }
 
-export const apiEntregas = {
-  // Publico: no requiere sesion
-  list: () => http("/citas/api/entregas/"),
+function limpiarNombreArchivo(nombre) {
+  return String(nombre || "encuesta_entrega.pdf")
+    .trim()
+    .replace(/[\\/:*?"<>|]+/g, "_");
+}
 
-  // Protegidos: requieren sesion
-  get: (id) =>
-    http(`/citas/api/entregas/${id}/`, {
-      auth: true,
-    }),
+function descargarBlob(blob, nombreArchivo) {
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement("a");
 
-  create: (payload) =>
-    http("/citas/api/entregas/", {
-      method: "POST",
-      auth: false,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }),
+  a.href = url;
+  a.download = limpiarNombreArchivo(nombreArchivo);
 
-  update: (id, payload) =>
-    http(`/citas/api/entregas/${id}/`, {
-      method: "PUT",
-      auth: true,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }),
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
 
-  patch: (id, payload) =>
-    http(`/citas/api/entregas/${id}/`, {
-      method: "PATCH",
-      auth: true,
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    }),
+  window.URL.revokeObjectURL(url);
+}
 
-  remove: (id) =>
-    http(`/citas/api/entregas/${id}/`, {
-      method: "DELETE",
-      auth: true,
-    }),
+async function crearEntrega(payload) {
+  return await http("/citas/api/entregas/", {
+    method: "POST",
+    auth: false,
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+async function descargarPdfEntrega(id, nombreArchivo) {
+  if (!id) {
+    throw new Error("No se recibió el ID de la entrega para generar el PDF.");
+  }
+
+  const blob = await http(`/citas/api/entregas/${id}/pdf/`, {
+    method: "GET",
+    auth: false,
+    responseType: "blob",
+  });
+
+  descargarBlob(blob, nombreArchivo || `encuesta_entrega_${id}.pdf`);
+
+  return blob;
+}
+
+export const apiEntrega = {
+  create: crearEntrega,
+  downloadPdf: descargarPdfEntrega,
 };
