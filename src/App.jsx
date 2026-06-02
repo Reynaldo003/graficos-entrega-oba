@@ -109,6 +109,7 @@ const VERSIONES = [
   "Peak Edition",
   "Robust",
   "Extreme",
+  "Goal",
 ];
 
 const COLORES = [
