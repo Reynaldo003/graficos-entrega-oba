@@ -76,6 +76,8 @@ const DEALERS = [
   "VW Orizaba",
 ];
 
+const TIPO_VENTA = ["Nuevos", "Usados", "Comerciales"];
+
 const MODELOS = [
   "Virtus",
   "Polo",
@@ -152,9 +154,6 @@ const ASESORES = [
   "EDGAR JESUS GOMEZ PEREZ",
   "VALERIA ZILLI DURANTE",
   "Idalmy Jiménez",
-  "Luis Alberto Ramírez",
-  "Ruben Romero",
-  "Verónica Castillo",
 ];
 
 function normalizeStr(value) {
@@ -191,7 +190,7 @@ function Skeleton({ className = "" }) {
 function SkeletonRow() {
   return (
     <tr className="animate-pulse">
-      {Array.from({ length: 11 }).map((_, index) => (
+      {Array.from({ length: 12 }).map((_, index) => (
         <td key={index} className="px-4 py-3">
           <div className="h-4 w-28 rounded bg-slate-200/70" />
         </td>
@@ -352,6 +351,7 @@ function crearEstadoInicialEntrega(fechaEntrega = "") {
     nombre: "",
     telefono: "",
     vin: "",
+    tipoVenta: "",
     modelo: "",
     version: "",
     color: "",
@@ -381,6 +381,7 @@ function crearPayloadEntrega(form) {
     telefono: form.telefono.trim(),
     correo: "",
     vin: form.vin.trim().toUpperCase(),
+    tipo_venta: form.tipoVenta,
     modelo_version: form.modelo,
     version: form.version,
     color: form.color,
@@ -473,6 +474,7 @@ function EntregaAgendaCard({ row, compact = false }) {
   const nombreCliente = row?.cliente?.nombre || "Sin nombre";
   const telefonoCliente = row?.cliente?.telefono || "—";
   const modelo = row?.modelo_version || "Modelo sin capturar";
+  const tipoVenta = row?.tipo_venta || "";
   const version = row?.version ? ` • ${row.version}` : "";
   const color = row?.color || "";
   const asesor = row?.asesor_ventas || "Asesor sin capturar";
@@ -522,6 +524,13 @@ function EntregaAgendaCard({ row, compact = false }) {
               {version}
             </span>
           </div>
+
+          {tipoVenta ? (
+            <div className="flex min-w-0 items-center gap-1.5">
+              <CarFront className="h-3.5 w-3.5 shrink-0 text-[#131E5C]" />
+              <span className="truncate">Tipo de venta: {tipoVenta}</span>
+            </div>
+          ) : null}
 
           {color ? (
             <div className="flex min-w-0 items-center gap-1.5">
@@ -1042,6 +1051,7 @@ function ModalRegistroEntrega({ abierto, fechaEntregaInicial, onClose, onGuardad
       nuevosErrores.telefono = "Ingresa un teléfono válido.";
     }
     if (!form.vin.trim()) nuevosErrores.vin = "Ingresa el VIN / Chasis.";
+    if (!form.tipoVenta) nuevosErrores.tipoVenta = "Selecciona el tipo de venta.";
     if (!form.modelo) nuevosErrores.modelo = "Selecciona un modelo.";
     if (!form.version) nuevosErrores.version = "Selecciona una versión.";
     if (!form.color) nuevosErrores.color = "Selecciona un color.";
@@ -1105,6 +1115,7 @@ function ModalRegistroEntrega({ abierto, fechaEntregaInicial, onClose, onGuardad
     errores.nombre ||
     errores.telefono ||
     errores.vin ||
+    errores.tipoVenta ||
     errores.modelo ||
     errores.version ||
     errores.color ||
@@ -1204,6 +1215,34 @@ function ModalRegistroEntrega({ abierto, fechaEntregaInicial, onClose, onGuardad
               />
             </CampoModal>
 
+            <CampoModal error={errores.tipoVenta}>
+              <LabelModal icon={<CarFront size={14} />} text="Tipo de venta" required />
+              <div
+                className={[
+                  "grid h-[42px] w-full min-w-[220px] grid-cols-3 rounded-xl border bg-slate-50 p-1",
+                  errores.tipoVenta ? "border-red-500" : "border-slate-300",
+                ].join(" ")}
+              >
+                {TIPO_VENTA.map((tipo) => (
+                  <button
+                    key={tipo}
+                    type="button"
+                    disabled={deshabilitado}
+                    onClick={() => setCampo("tipoVenta", tipo)}
+                    className={[
+                      "min-w-0 truncate whitespace-nowrap rounded-lg px-2 text-[11px] font-black transition disabled:opacity-60",
+                      form.tipoVenta === tipo
+                        ? "bg-[#131E5C] text-white shadow-sm"
+                        : "text-[#131E5C] hover:bg-[#131E5C]/10",
+                    ].join(" ")}
+                    title={tipo}
+                  >
+                    {tipo}
+                  </button>
+                ))}
+              </div>
+            </CampoModal>
+
             <CampoModal error={errores.modelo}>
               <LabelModal icon={<Car size={14} />} text="Modelo" required />
               <select
@@ -1283,7 +1322,7 @@ function ModalRegistroEntrega({ abierto, fechaEntregaInicial, onClose, onGuardad
               </select>
             </CampoModal>
 
-            <div className="md:col-span-2 xl:col-span-3">
+            <div className="md:col-span-2 xl:col-span-2">
               <LabelModal icon={<MessageSquare size={14} />} text="Comentarios" />
               <textarea
                 placeholder="Notas internas..."
@@ -1821,6 +1860,16 @@ function GraficosView({ stats, chartData, highlights }) {
           maxItems={5}
         />
 
+        <GraphList
+          title="Por tipo de venta"
+          icon={CarFront}
+          items={chartData.porTipoVenta}
+          labelKey="tipoVenta"
+          colors={MODELO_COLORS}
+          total={stats.total}
+          maxItems={5}
+        />
+
         <DiaSemanaGraph chartData={chartData} />
 
         <GraphList
@@ -1982,6 +2031,7 @@ export default function App() {
         telCliente.toLowerCase().includes(q) ||
         normalizeStr(item.vin).toLowerCase().includes(q) ||
         normalizeStr(item.modelo_version).toLowerCase().includes(q) ||
+        normalizeStr(item.tipo_venta).toLowerCase().includes(q) ||
         normalizeStr(item.version).toLowerCase().includes(q) ||
         normalizeStr(item.color).toLowerCase().includes(q) ||
         normalizeStr(item.asesor_ventas).toLowerCase().includes(q) ||
@@ -2224,6 +2274,12 @@ export default function App() {
       "modelo"
     ).slice(0, 10);
 
+    const porTipoVenta = countBy(
+      sorted,
+      (row) => row.tipo_venta,
+      "tipoVenta"
+    ).slice(0, 10);
+
     const porVersion = countBy(sorted, (row) => row.version, "version").slice(
       0,
       10
@@ -2243,6 +2299,7 @@ export default function App() {
       porHora,
       porAsesor,
       porModelo,
+      porTipoVenta,
       porVersion,
       porColor,
       porDiaSemana,
@@ -2367,7 +2424,7 @@ export default function App() {
                     onChange={(e) =>
                       setFilters((prev) => ({ ...prev, q: e.target.value }))
                     }
-                    placeholder="Buscar por cliente, teléfono, VIN, modelo, versión, color, asesor..."
+                    placeholder="Buscar por cliente, teléfono, VIN, tipo de venta, modelo, versión, color, asesor..."
                     className="w-full bg-transparent text-sm font-semibold text-[#131E5C] outline-none placeholder:text-slate-400"
                   />
 
@@ -2519,6 +2576,7 @@ export default function App() {
                     <th className="px-4 py-3">Teléfono</th>
                     <th className="px-4 py-3">VIN</th>
                     <th className="px-4 py-3">Modelo</th>
+                    <th className="px-4 py-3">Tipo venta</th>
                     <th className="px-4 py-3">Versión</th>
                     <th className="px-4 py-3">Color</th>
                     <th className="px-4 py-3">Asesor ventas</th>
@@ -2564,6 +2622,10 @@ export default function App() {
                             </td>
 
                             <td className="px-4 py-3 text-[#131E5C]">
+                              {row.tipo_venta || "—"}
+                            </td>
+
+                            <td className="px-4 py-3 text-[#131E5C]">
                               {row.version || "—"}
                             </td>
 
@@ -2595,7 +2657,7 @@ export default function App() {
                       {sorted.length === 0 ? (
                         <tr>
                           <td
-                            colSpan={11}
+                            colSpan={12}
                             className="px-4 py-10 text-center text-sm font-semibold text-[#131E5C]"
                           >
                             No hay resultados con esos filtros.
