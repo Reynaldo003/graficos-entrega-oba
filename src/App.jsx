@@ -1123,9 +1123,9 @@ function ModalRegistroEntrega({ abierto, fechaEntregaInicial, onClose, onGuardad
     errores.asesorVentas;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-3 backdrop-blur-sm">
-      <div className="max-h-[92vh] w-full max-w-5xl overflow-hidden rounded-2xl bg-white shadow-2xl">
-        <div className="flex items-start justify-between gap-4 bg-[#131E5C] px-5 py-4 text-white">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 p-2 backdrop-blur-sm sm:p-3">
+      <div className="flex h-[calc(100dvh-1rem)] w-full max-w-5xl flex-col overflow-hidden rounded-2xl bg-white shadow-2xl sm:h-auto sm:max-h-[92dvh]">
+        <div className="flex shrink-0 items-start justify-between gap-4 bg-[#131E5C] px-4 py-4 text-white sm:px-5">
           <div className="min-w-0">
             <div className="text-[11px] font-black uppercase tracking-[0.2em] text-white/70">
               Nuevo registro
