@@ -155,7 +155,8 @@ const ASESORES = [
   "EDGAR JESUS GOMEZ PEREZ",
   "VALERIA ZILLI DURANTE",
   "Idalmy Jiménez",
-  "RUBEN ROMERO VALDES"
+  "RUBEN ROMERO VALDES",
+  "VERONICA CASTILLO FUENTES",
 ];
 
 function normalizeStr(value) {
