@@ -101,17 +101,26 @@ const MODELOS = [
 ];
 
 const VERSIONES = [
+  "Track",
   "Trendline",
   "Comfortline",
   "Highline",
+  "Life",
+  "Style",
   "Sportline",
+  "R-Line",
   "GLI",
   "GTI",
   "R",
   "Peak Edition",
+  "Dark Label",
+  "Panamericana",
+  "Aventura",
   "Robust",
   "Extreme",
   "Goal",
+  "Maxi Cargo",
+  "Cargo Van",
 ];
 
 const COLORES = [
@@ -515,7 +524,8 @@ function StatusBadge({ row, compact = false }) {
   );
 }
 
-function EntregaAgendaCard({ row, compact = false, onClick }) {  const entregada = entregaFisicaActiva(row?.entrega_reportada);
+function EntregaAgendaCard({ row, compact = false, onClick }) {
+  const entregada = entregaFisicaActiva(row?.entrega_reportada);
   const nombreCliente = row?.cliente?.nombre || "Sin nombre";
   const telefonoCliente = row?.cliente?.telefono || "—";
   const modelo = row?.modelo_version || "Modelo sin capturar";
@@ -526,7 +536,7 @@ function EntregaAgendaCard({ row, compact = false, onClick }) {  const entregada
   const preparadaPor = row?.preparada_por || "";
 
   return (
-  <div
+    <div
       onClick={() => onClick?.(row)}
       role="button"
       tabIndex={0}
@@ -1124,7 +1134,7 @@ function ModalRegistroEntrega({ abierto, fechaEntregaInicial, entregasExistentes
     if (!form.fechaEntrega) {
       nuevosErrores.fechaEntrega = "Selecciona fecha y hora de entrega.";
     }
-   if (!form.asesorVentas.trim()) {
+    if (!form.asesorVentas.trim()) {
       nuevosErrores.asesorVentas = "Selecciona el asesor de ventas.";
     }
 
@@ -1368,7 +1378,7 @@ function ModalRegistroEntrega({ abierto, fechaEntregaInicial, entregasExistentes
               </select>
             </CampoModal>
 
-           <div className="md:col-span-2 xl:col-span-3">
+            <div className="md:col-span-2 xl:col-span-3">
               <CampoModal error={errores.fechaEntrega}>
                 <LabelModal icon={<Calendar size={14} />} text="Fecha y hora" required />
 
@@ -1404,8 +1414,8 @@ function ModalRegistroEntrega({ abierto, fechaEntregaInicial, entregasExistentes
                             activa
                               ? "bg-[#131E5C] text-white shadow-sm"
                               : ocupada
-                              ? "bg-red-50 text-red-300 line-through"
-                              : "bg-slate-100 text-[#131E5C] hover:bg-[#131E5C]/10",
+                                ? "bg-red-50 text-red-300 line-through"
+                                : "bg-slate-100 text-[#131E5C] hover:bg-[#131E5C]/10",
                           ].join(" ")}
                           title={ocupada ? "Horario ocupado" : hour}
                         >
@@ -1418,7 +1428,7 @@ function ModalRegistroEntrega({ abierto, fechaEntregaInicial, entregasExistentes
               </CampoModal>
             </div>
 
-           <CampoModal error={errores.asesorVentas}>
+            <CampoModal error={errores.asesorVentas}>
               <LabelModal icon={<UserCheck size={14} />} text="Asesor ventas" required />
               <select
                 value={form.asesorVentas}
@@ -2902,7 +2912,7 @@ export default function App() {
           />
         ) : null}
 
-       <ModalRegistroEntrega
+        <ModalRegistroEntrega
           abierto={modalRegistro.abierto}
           fechaEntregaInicial={modalRegistro.fechaEntrega}
           entregasExistentes={dealerRows}
