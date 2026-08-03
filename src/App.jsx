@@ -166,6 +166,9 @@ const ASESORES = [
   "Idalmy Jiménez",
   "RUBEN ROMERO VALDES",
   "VERONICA CASTILLO FUENTES",
+  "David Uriel García Navarro",
+  "Gustavo Chontal Romero",
+  "Maria Monserrath Zarate Gamboa"
 ];
 
 function normalizeStr(value) {
