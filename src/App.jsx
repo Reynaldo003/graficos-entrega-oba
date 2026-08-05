@@ -160,7 +160,6 @@ const ASESORES = [
   "YAMIL MISAEL RODRIGUEZ AGUILAR",
   "LUIS ALFONSO CORIA MARROQUIN",
   "CANDY DENISSE MARQUEZ CORTES",
-  "DELMAR JAVIER ILLESCAS DOMINGUEZ",
   "EDGAR JESUS GOMEZ PEREZ",
   "VALERIA ZILLI DURANTE",
   "Idalmy Jiménez",
@@ -168,7 +167,8 @@ const ASESORES = [
   "VERONICA CASTILLO FUENTES",
   "David Uriel García Navarro",
   "Gustavo Chontal Romero",
-  "Maria Monserrath Zarate Gamboa"
+  "Maria Monserrath Zarate Gamboa",
+  "Paul Serrano Vera",
 ];
 
 function normalizeStr(value) {
