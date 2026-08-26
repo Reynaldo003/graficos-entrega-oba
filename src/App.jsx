@@ -111,6 +111,8 @@ const VERSIONES = [
   "R-Line",
   "GLI",
   "GTI",
+  "GT",
+  "Track",
   "R",
   "Peak Edition",
   "Dark Label",
@@ -132,6 +134,9 @@ const COLORES = [
   "Gris Platino",
   "Gris Carbon Steel",
   "Gris Franela",
+  "Gris Olivo",
+  "Gris Ascot",
+  "Gris Moonstone",
   "Negro Ninja",
   "Negro Profundo",
   "Azul Rising",
@@ -140,7 +145,7 @@ const COLORES = [
   "Rojo Kings",
   "Amarillo Kurkuma",
   "Verde Vibrante",
-  "Gris Moonstone"
+  "Verde Avocado",
 ];
 
 const ASESORES = [
