@@ -69,9 +69,31 @@ async function http(
   return await res.text();
 }
 
+async function listarTodasLasEntregas() {
+  let path = "/citas/api/entregas/";
+  const rows = [];
+  const visited = new Set();
+
+  while (path && !visited.has(path)) {
+    visited.add(path);
+    const data = await http(path);
+
+    if (Array.isArray(data)) return data;
+
+    if (Array.isArray(data?.results)) rows.push(...data.results);
+
+    if (!data?.next) break;
+
+    const nextUrl = new URL(data.next, API);
+    path = `${nextUrl.pathname}${nextUrl.search}`;
+  }
+
+  return rows;
+}
+
 export const apiEntregas = {
   // Publico: no requiere sesion
-  list: () => http("/citas/api/entregas/"),
+  list: listarTodasLasEntregas,
 
   // Protegidos: requieren sesion
   get: (id) =>
