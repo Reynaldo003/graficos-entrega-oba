@@ -76,7 +76,7 @@ const PIE_COLORS = [EMERALD, AMBER];
 const DEALERS = [
   "VW Orizaba",
 ];
-
+//ola
 const TIPO_VENTA = ["Nuevos", "Usados", "Comerciales"];
 
 const MODELOS = [
